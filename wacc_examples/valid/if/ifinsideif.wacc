@@ -1,0 +1,23 @@
+#simple wacc program that tests if the compiler can compile nested if
+
+# Output:
+# good
+
+#Program:
+
+begin
+    char c1 = 'f';
+    char c2 = 'F';
+    char c3 = 'f';
+    if c1 == c2
+    then 
+        if c1 == c3 
+        then
+            println "correct"
+        else
+            println "incorrect"
+        fi
+    else 
+        println "good"
+    fi
+end

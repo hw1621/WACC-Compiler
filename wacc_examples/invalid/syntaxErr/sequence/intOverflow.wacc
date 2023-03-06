@@ -1,0 +1,8 @@
+# Program:
+
+begin
+  int x = 999990000042 ;
+  int y = 00000000000000000500000000000000000000000 ;
+  println x ;
+  println y
+end

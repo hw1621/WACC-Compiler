@@ -1,0 +1,36 @@
+package wacc.Frontend
+
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers._
+import java.io.File
+import Frontend.Parser._
+import Frontend.Semantic._
+
+class SemanticCheck extends AnyFlatSpec {
+  def getListOfFilesRecursively(dir: String): Array[String] = {
+		val d = new File(dir)
+		if (d.exists && d.isDirectory) {
+     		val result : List[String] = d.listFiles.filter(_.isDirectory)
+					.toList.flatMap(x => getListOfFilesRecursively(x.toString()))
+			d.listFiles.filter(_.isFile).map(_.toString()).concat(result)
+		} else {
+			Array[String]()
+		}
+	}
+  def allSemFail(srcPath: String) = {
+		val allInValidProgramPaths = getListOfFilesRecursively(srcPath)
+		for (path <- allInValidProgramPaths) {
+      		behavior of "Semantically Invalid programs " + path
+      		it should "pass syntax check" in { parse(new File(path)).get should matchPattern {case parsley.Success(_) => }}
+          it should "fail semantic check" in {
+            parse(new File(path)).get match {
+              case parsley.Success(program) => assert(!semanticCheck(program, path)._1.isEmpty)
+              case parsley.Failure(_) => info("Semantic check not process due to syntax error")
+            }
+          }
+		}
+	}
+  val examplePath = "wacc_examples"
+  info("Testing all semantically invalid program")
+  allSemFail(new File(examplePath, "invalid/semanticErr").getPath)
+}
